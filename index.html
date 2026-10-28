@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>nestmail — Temporary email</title>
+<meta name="description" content="A private, disposable email address for sign-ups, trials and one-time codes. No account, no trace.">
+<meta name="theme-color" content="#fafaf8">
+<meta property="og:title" content="nestmail — Temporary email">
+<meta property="og:description" content="An inbox that disappears. Disposable email with no sign-up.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#fafaf8;--tx:#111110;--mut:#8b8b85;--bd:#e7e6e1;--hv:#f2f1ed;--ok:#3f9b6a;
+--sans:"Geist",-apple-system,"Helvetica Neue",Arial,sans-serif;--serif:"Instrument Serif",Georgia,"Times New Roman",serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0c;--tx:#f1f0ec;--mut:#78786f;--bd:#222223;--hv:#141415;--ok:#5fc08c}}
+:root[data-theme="dark"]{--bg:#0b0b0c;--tx:#f1f0ec;--mut:#78786f;--bd:#222223;--hv:#141415;--ok:#5fc08c}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 var(--sans);letter-spacing:-.005em}
+.w{max-width:1080px;margin:0 auto;padding:0 28px}
+header{display:flex;justify-content:space-between;align-items:center;padding:28px 0}
+.logo{font:400 26px var(--serif);letter-spacing:-.01em}
+nav{display:flex;gap:28px;align-items:center;font-size:14px}
+nav a{color:var(--mut);text-decoration:none;transition:color .2s}nav a:hover{color:var(--tx)}
+.hero{padding:clamp(24px,4vw,48px) 0 clamp(8px,2vw,16px)}
+.eyebrow{font:500 12px var(--mono);color:var(--mut);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+h1{font:400 clamp(26px,6.2vw,76px)/1.05 var(--serif);letter-spacing:-.03em;margin:0;white-space:nowrap}
+h1 em{font-style:italic;color:var(--mut)}
+.sub{color:var(--mut);max-width:520px;margin:16px 0 0;font-size:16px}
+.box{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:32px 0 28px;margin-top:28px}
+.lab{font:500 12px var(--mono);color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
+.addr{font:400 clamp(20px,4.2vw,44px)/1.2 var(--mono);letter-spacing:-.04em;margin:14px 0 28px;overflow-wrap:anywhere;font-weight:400}
+.acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button,select{font:500 14px var(--sans);color:var(--tx);background:transparent;border:1px solid var(--bd);border-radius:99px;padding:10px 20px;cursor:pointer;transition:all .2s;appearance:none}
+button:hover,select:hover{border-color:var(--tx)}
+button.p{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+button.p:hover{opacity:.85}
+select{padding-right:20px;color:var(--mut)}
+.status{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:32px;font:400 12px var(--mono);color:var(--mut)}
+.status i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:8px;vertical-align:1px;animation:b 2s ease-in-out infinite}
+@keyframes b{50%{opacity:.25}}
+.bar{height:1px;background:var(--bd);margin-top:14px;position:relative}.bar b{position:absolute;left:0;top:0;height:1px;background:var(--tx);transition:width 1s linear}
+.inbox{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);margin-top:72px;border-top:1px solid var(--bd)}
+@media(max-width:780px){.inbox{grid-template-columns:1fr}.rd{border-left:0!important;border-top:1px solid var(--bd);padding-left:0!important}}
+.ls{padding:28px 0}
+.hd{display:flex;justify-content:space-between;margin-bottom:12px}
+.row{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--bd);border-radius:0;padding:18px 4px;position:relative}
+.row:hover,.row.on{background:var(--hv);border-color:var(--bd)}
+.row .f{display:flex;justify-content:space-between;font-weight:500;font-size:14px}
+.row .f small{color:var(--mut);font:400 11px var(--mono)}
+.row .s{color:var(--mut);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-weight:400}
+.row.n .f::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--tx);position:absolute;left:-12px;top:26px}
+.empty{color:var(--mut);padding:56px 0;font:400 italic 22px var(--serif)}
+.rd{border-left:1px solid var(--bd);padding:28px 0 28px 48px;min-height:340px}
+.rd h3{font:400 34px/1.15 var(--serif);letter-spacing:-.02em;margin:18px 0 20px}
+.rd .m{font:400 12px/1.9 var(--mono);color:var(--mut);padding-bottom:24px;border-bottom:1px solid var(--bd);margin-bottom:24px}
+.rd p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;max-width:56ch}
+.pr{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:48px;margin-top:96px;padding-top:40px;border-top:1px solid var(--bd)}
+.pr span{font:400 italic 20px var(--serif);color:var(--mut)}.pr h4{font:500 15px var(--sans);margin:10px 0 6px}.pr p{margin:0;color:var(--mut);font-size:14px}
+footer{margin:96px 0 48px;padding-top:28px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--mut);font-size:13px}
+.t{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:50%;transform:translate(-50%,12px);background:var(--tx);color:var(--bg);padding:10px 20px;border-radius:99px;font-size:13px;opacity:0;transition:.3s;pointer-events:none}.t.s{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="w">
+<header><div class="logo">nestmail</div><nav><a href="#how">How it works</a><a href="#how">Privacy</a><a href="#" id="th">Dark</a></nav></header>
+
+<section class="hero">
+  <div class="eyebrow">Temporary email</div>
+  <h1>An inbox that <em>disappears.</em></h1>
+  <p class="sub">A private address for sign-ups, trials and one-time codes. No account, no trace, nothing to clean up.</p>
+</section>
+
+<section class="box">
+  <div class="lab">Your address</div>
+  <div class="addr" id="addr"></div>
+  <div class="acts">
+    <button class="p" id="copy">Copy address</button>
+    <button id="refresh">Refresh</button>
+    <button id="change">New address</button>
+    <button id="del">Delete</button>
+    <select id="dom" aria-label="Domain"></select>
+  </div>
+  <div class="status"><span><i></i>Listening · refresh in <span id="cd">10</span>s</span><span>Expires in <span id="exp">10:00</span></span></div>
+  <div class="bar"><b id="pb" style="width:100%"></b></div>
+</section>
+
+<section class="inbox">
+  <div class="ls"><div class="hd lab"><span>Inbox</span><span id="cnt">00</span></div><div id="list"></div></div>
+  <div class="rd" id="view"></div>
+</section>
+
+<section class="pr" id="how">
+  <div><span>01</span><h4>No sign-up</h4><p>Open the page and your address is ready. Nothing to register.</p></div>
+  <div><span>02</span><h4>Self-destructing</h4><p>Addresses and every message expire automatically after ten minutes.</p></div>
+  <div><span>03</span><h4>Private by design</h4><p>No tracking, no profile, no link back to who you are.</p></div>
+</section>
+
+<footer><span>© 2026 nestmail</span><span>Preview mode · incoming messages are simulated until a mail backend is connected.</span></footer>
+</div>
+<div class="t" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+const DOMAINS=["nestmail.dev","tempbox.site","quickinbox.xyz"];
+const SAMPLES=[
+ {from:"Netflix",subject:"Your verification code is 482913",body:"Hi,\n\nUse code 482913 to verify your email. It expires in 10 minutes.\n\nIf you didn’t request this, you can safely ignore this message."},
+ {from:"GitHub",subject:"Please verify your email address",body:"Welcome to GitHub.\n\nConfirm your email address to finish setting up your account.\n\nhttps://github.com/verify/xxxx"},
+ {from:"Spotify",subject:"Welcome to Spotify",body:"Thanks for signing up. Your free trial starts today."},
+ {from:"Atelier Shop",subject:"Your welcome offer",body:"Here’s 20% off your first order.\n\nCode: WELCOME20 — valid for 7 days."}
+];
+// Replace this object to connect a real mail backend.
+const api={
+ newAddress(d){const c="abcdefghjkmnpqrstuvwxyz23456789";let s="";for(let i=0;i<9;i++)s+=c[Math.floor(Math.random()*c.length)];return s+"@"+d},
+ fetchMessages(S){return S.msgs}
+};
+let S={addr:"",msgs:[],sel:null,exp:600,cd:10,n:0,tm:0};
+try{const t=localStorage.getItem("nm-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}
+function syncTheme(){const d=getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()==="#0b0b0c";$("th").textContent=d?"Light":"Dark"}
+DOMAINS.forEach(d=>{const o=document.createElement("option");o.value=o.textContent=d;$("dom").appendChild(o)});
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("s");setTimeout(()=>e.classList.remove("s"),1700)}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function render(){
+ $("addr").textContent=S.addr;const m=api.fetchMessages(S);$("cnt").textContent=String(m.length).padStart(2,"0");
+ $("list").innerHTML=m.length?m.map(x=>`<button class="row ${S.sel===x.id?"on":""} ${x.read?"":"n"}" data-id="${x.id}"><div class="f"><span>${esc(x.from)}</span><small>${x.t}</small></div><div class="s">${esc(x.subject)}</div></button>`).join(""):'<div class="empty">Waiting for mail…</div>';
+ const c=m.find(x=>x.id===S.sel);
+ $("view").innerHTML=c?`<div class="lab">Message</div><h3>${esc(c.subject)}</h3><div class="m">From &nbsp;${esc(c.from)}<br>To &nbsp;&nbsp;&nbsp;${esc(S.addr)}<br>${c.time}</div><p>${esc(c.body)}</p>`:'<div class="empty">Select a message to read.</div>';
+}
+function deliver(){const s=SAMPLES[S.n++%SAMPLES.length],d=new Date();S.msgs.unshift({...s,id:Date.now()+Math.random(),read:false,t:d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),time:d.toLocaleString()});render();toast("New message received")}
+function reset(){clearTimeout(S.tm);S.addr=api.newAddress($("dom").value);S.msgs=[];S.sel=null;S.exp=600;S.cd=10;render();S.tm=setTimeout(deliver,6000)}
+$("list").onclick=e=>{const r=e.target.closest(".row");if(!r)return;S.sel=+r.dataset.id;const m=S.msgs.find(x=>x.id===S.sel);if(m)m.read=true;render()};
+$("copy").onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(S.addr).then(()=>toast("Address copied"),()=>toast("Press Ctrl+C to copy"))};
+$("refresh").onclick=()=>{S.cd=10;render();toast("Inbox refreshed")};
+$("change").onclick=()=>{reset();toast("New address ready")};
+$("del").onclick=()=>{reset();toast("Address deleted")};
+$("dom").onchange=reset;
+$("th").onclick=e=>{e.preventDefault();const d=document.documentElement,dark=$("th").textContent==="Light";d.dataset.theme=dark?"light":"dark";try{localStorage.setItem("nm-theme",d.dataset.theme)}catch(x){}syncTheme()};
+setInterval(()=>{S.cd--;if(S.cd<=0){S.cd=10;render()}S.exp--;if(S.exp<=0){reset();toast("Address expired")}
+ $("cd").textContent=S.cd;$("exp").textContent=String(Math.floor(S.exp/60)).padStart(2,"0")+":"+String(S.exp%60).padStart(2,"0");$("pb").style.width=(S.exp/6)+"%"},1000);
+syncTheme();reset();
+</script>
+</body>
+</html>
